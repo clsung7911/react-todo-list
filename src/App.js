@@ -44,7 +44,7 @@ class App extends Component{
     }else if(this.state.mode === 'create'){
       //_article = <CreateContents></CreateContents>
     }else if(this.state.mode === 'update'){
-      
+      // 업데이트 할 곳
     }else if(this.state.mode === 'delete'){
       
     }
