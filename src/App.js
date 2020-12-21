@@ -5,10 +5,12 @@ import React, { Component } from 'react';
 import Controls from './Components/Controls';
 import CreateContents from './Components/CreateContents';
 import ReadContents from './Components/ReadContents';
+import UpdateContents from './Components/UpdateContents';
 
 class App extends Component{
   constructor(props){
     super(props);
+    this.max_contents_id = 3; // contents의 마지막 id값으로 -> 저 안에 추가할거라서... state에 넣지 않은 이유는 불필요해서 굳이 넣을 필요 음슴
     this.state = {
       mode:'read',
       seleced_contents_id : 2,
@@ -27,28 +29,68 @@ class App extends Component{
       let data = this.state.contents[i];
       if(data.id === this.state.seleced_contents_id){
         return data;
-        break;
+        //break;
       }
       i = i + 1;
     }
   }
-  render(){
-    let _title, _desc, _article = null;
+
+  getContent(){
+    let _title, _desc, _article, _content = null;
     if(this.state.mode === 'welcome'){
       _title = this.state.view.title;
       _desc = this.state.view.desc;
       _article = <ReadContents title={_title} desc={_desc}></ReadContents>
     }else if(this.state.mode === 'read'){
-      let _content = this.getReadContent();
+      _content = this.getReadContent();
       _article = <ReadContents title={_content.title} desc={_content.desc}></ReadContents>
     }else if(this.state.mode === 'create'){
-      //_article = <CreateContents></CreateContents>
+      _article = <CreateContents onSubmit={
+        function(_title, _desc){
+          //console.log(_title, _desc);
+          // push - 원본 배열 자체를 변경
+          // concat  - 원본 배열을 복제해서 복제한 배열을 변경
+          // let _contents = this.state.contents.concat({id:this.max_contents_id, title:_title, desc: _desc});
+          // this.setState({
+          //   contents: _contents
+          // });
+          // 여기에 얕은복사/깊은복사 한번 고민해보기
+          // 배열 복제는 Array.from(array)
+          // 객체 복제는 Obejct.assign(obj)
+          let newContents = Array.from(this.state.contents); // this.state.contents 배열과 똑같이 보이는 배열을 새롭게 만들지만 둘이 다름
+          newContents.push({id:this.max_contents_id, title:_title, desc: _desc});
+          this.setState({
+            contents: newContents
+          });
+        }.bind(this)}></CreateContents>
     }else if(this.state.mode === 'update'){
-      // 업데이트 할 곳
+      _content = this.getReadContent();
+      _article = <UpdateContents data={_content} onSubmit={
+        function(_id, _title, _desc){
+          let _contents = Array.from(this.state.contents);
+          let i = 0;
+          while(i<_contents.length){
+            if(_contents[i].id === _id){
+              _contents[i] = {
+                id : _id,
+                title : _title,
+                desc : _desc
+              };
+              break;
+            }
+            i = i + 1;
+          }
+          this.setState({
+            contents : _contents
+          });
+        }.bind(this)
+      }></UpdateContents>
     }else if(this.state.mode === 'delete'){
-      
+      //
     }
-
+    return _article;
+  }
+  render(){
     return (
       <div className='App'>
         <Header 
@@ -67,10 +109,8 @@ class App extends Component{
               mode : 'read',
               seleced_contents_id : Number(id) 
             });
-            debugger;
           }.bind(this)}
           data={this.state.contents}></TOC>
-        <ReadContents title={_title} desc={_desc}></ReadContents>
         <Controls
           onChangeMode={function(_mode){
             if(_mode === 'delete'){
@@ -82,6 +122,7 @@ class App extends Component{
             }
           }.bind(this)}>
           </Controls>
+          {this.getContent()}
       </div>
     );
   }

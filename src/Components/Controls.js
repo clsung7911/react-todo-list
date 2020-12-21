@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 
-class Controls extends Component{
-    render(){
-        return(
+class Controls extends Component {
+    render() {
+        return (
             <ul>
-                <li><a href="/" onClick={function(e){
+                <li><a href="/create" onClick={function (e) {
                     e.preventDefault();
                     this.props.onChangeMode('create');
-                }.bind(this)}>CREATE</a></li>
-                <li><a href="/">UPDATE</a></li>
-                <li><a href="/">DELETE</a></li>
+                }.bind(this)}>create</a></li>
+                <li><a href="/update" onClick={function (e) {
+                    e.preventDefault();
+                    this.props.onChangeMode('update');
+                }.bind(this)}>update</a></li>
+                <li><input onClick={function (e) {
+                    e.preventDefault();
+                    this.props.onChangeMode('delete');
+                }.bind(this)} type="button" value="delete"></input></li>
             </ul>
         );
     }
