@@ -86,7 +86,7 @@ class App extends Component{
         }.bind(this)
       }></UpdateContents>
     }else if(this.state.mode === 'delete'){
-      //
+      // 삭제부분
     }
     return _article;
   }
