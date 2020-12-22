@@ -26,7 +26,7 @@ class TOC extends Component {
         }
         return (
             <nav>
-                <ul>
+                <ul className="ul1">
                     {list}
                 </ul>
             </nav>
